@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:id="@+id/creature_card"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:layout_margin="@dimen/padding_half"
+	app:cardCornerRadius="@dimen/card_cornier_radius"
+	app:cardElevation="@dimen/card_elevation">
+
+	<ImageView
+		android:id="@+id/creature_image"
+		android:layout_width="@dimen/card_image_size"
+		android:layout_height="@dimen/card_image_size"
+		android:layout_gravity="center"
+		android:contentDescription="@string/content_description_header_image"
+		android:scaleType="fitXY"
+		android:src="@drawable/creature_cat_derp" />
+
+	<LinearLayout
+		android:id="@+id/card_ripple"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:background="?android:selectableItemBackground"
+		android:orientation="horizontal" />
+
+	<LinearLayout
+		android:id="@+id/nick_name_holder"
+		android:layout_width="match_parent"
+		android:layout_height="@dimen/card_nickname_holder_height"
+		android:layout_gravity="bottom"
+		android:alpha="0.9"
+		android:background="@color/colorAccent"
+		android:orientation="horizontal" >
+
+		<TextView
+			android:id="@+id/nickname"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:gravity="center"
+			android:paddingStart="@dimen/padding_half"
+			android:paddingEnd="@dimen/padding_half"
+			android:textAppearance="?android:attr/textAppearanceLarge"
+			android:textColor="@android:color/white" />
+	</LinearLayout>
+
+
+</androidx.cardview.widget.CardView>
