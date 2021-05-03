@@ -59,4 +59,16 @@
     app:layout_constraintTop_toTopOf="parent"
     app:srcCompat="@drawable/ic_favorite_border_black_24dp" />
 
+  <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/food_recycler"
+      android:layout_width="match_parent"
+      android:layout_height="405dp"
+      android:layout_margin="8dp"
+      android:layout_marginTop="@dimen/padding_standard"
+      android:layout_marginBottom="@dimen/padding_standard"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/planet" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

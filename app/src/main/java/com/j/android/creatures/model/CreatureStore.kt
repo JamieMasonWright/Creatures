@@ -40,6 +40,8 @@ object CreatureStore {
 
   fun getCreatures() = creatures
 
+  fun getCreautureFoods(creature: Creature): List<Food> = creature.foods.mapNotNull { getFoodById(it) }
+
   fun getFavourites(context: Context) : List<Creature>? = Favorites.getFavorites(context)?.mapNotNull { getCreatureById(it) }
 
   private fun loadJSONFromAsset(filename: String, context: Context): String? {
