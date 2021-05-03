@@ -13,6 +13,7 @@ object CreatureStore {
 
   private lateinit var creatures: List<Creature>
   private lateinit var foods: List<Food>
+  private lateinit var favourites: List<Favorites>
 
   fun loadCreatures(context: Context) {
     val gson = Gson()
@@ -38,6 +39,8 @@ object CreatureStore {
   fun getFoodById(id: Int) = foods.firstOrNull { it.id == id }
 
   fun getCreatures() = creatures
+
+  fun getFavourites(context: Context) : List<Creature>? = Favorites.getFavorites(context)?.mapNotNull { getCreatureById(it) }
 
   private fun loadJSONFromAsset(filename: String, context: Context): String? {
     var json: String? = null
