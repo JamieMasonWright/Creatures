@@ -9,5 +9,7 @@
 	<string name="creature_image">Creature Image</string>
   <string name="content_description">Food Image</string>
   <string name="food_image">Food Image</string>
+	<string name="menu_span_1">Span 1</string>
+  <string name="menu_span_2">Span 2</string>
 
 </resources>
