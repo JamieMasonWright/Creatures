@@ -65,5 +65,4 @@ class CreatureWithFoodAdapter(private val creatures: MutableList<Creature>) : Re
 	}
 
 	override fun getItemCount(): Int = creatures.size
-
 }

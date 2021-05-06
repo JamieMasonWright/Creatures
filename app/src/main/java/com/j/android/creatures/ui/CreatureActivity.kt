@@ -6,7 +6,10 @@ import android.os.Bundle
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.j.android.creatures.R
 import com.j.android.creatures.model.Favorites
 import com.j.android.creatures.model.Creature
@@ -17,6 +20,8 @@ class CreatureActivity : AppCompatActivity() {
 
   private lateinit var creature: Creature
   private val adapter = FoodAdapter(mutableListOf())
+  private lateinit var layoutManager: StaggeredGridLayoutManager
+
 
   companion object {
     private const val EXTRA_CREATURE_ID = "EXTRA_CREATURE_ID"
@@ -86,10 +91,13 @@ class CreatureActivity : AppCompatActivity() {
   }
 
   private fun setUpFoods(){
-    food_recycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+    layoutManager = StaggeredGridLayoutManager(3,  GridLayoutManager.VERTICAL)
+    food_recycler.layoutManager = layoutManager
     food_recycler.adapter = adapter
     val foods = CreatureStore.getCreautureFoods(creature)
     adapter.updateFoods(foods)
+    val divideWidthInPixels = resources.getDimensionPixelSize(R.dimen.list_item_divider_height)
+    food_recycler.addItemDecoration(FoodItemDecoration(ContextCompat.getColor(this, R.color.black), divideWidthInPixels))
 
   }
 }
