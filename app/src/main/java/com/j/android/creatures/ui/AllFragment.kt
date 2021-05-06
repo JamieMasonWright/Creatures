@@ -57,6 +57,20 @@ class AllFragment : Fragment() {
     listItemDecoration = SpacingItemDecoration(1, spacingInPixels)
     gridItemDecoration= SpacingItemDecoration(2, spacingInPixels)
     creature_recycler_view.addItemDecoration(gridItemDecoration)
+    
+    creature_recycler_view.addOnScrollListener(object : RecyclerView.OnScrollListener()
+    {
+      override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int)
+      {
+        super.onScrolled(recyclerView, dx, dy)
+        adapter.scrollDirection = if(dy > 0 )
+        {
+          CreatureCardAdapter.ScrollDirection.DOWN
+        }else{
+          CreatureCardAdapter.ScrollDirection.UP
+        }
+      }
+    })
 
   }
 
