@@ -40,9 +40,9 @@ class FavoritesFragment : Fragment() {
   {
     super.onResume()
     activity?.let {
-      CreatureStore.getFavourites(it)?.let {
-        favourites ->
-        adapter.updateCreatrures(favourites)
+      val composites = CreatureStore.getFavouriteComposites(it)
+      composites?.let { compositesList ->
+        adapter.updateCreatrures(compositesList)
       }
     }
   }
