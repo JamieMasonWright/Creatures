@@ -149,4 +149,8 @@ class CreatureCardAdapter(private val creatures: MutableList<Creature>): Recycle
 		notifyItemMoved(fromPosition, toPosition)
 		return true
 	}
+
+	override fun onItemDismiss(viewHolder: RecyclerView.ViewHolder, position: Int) {
+
+	}
 }

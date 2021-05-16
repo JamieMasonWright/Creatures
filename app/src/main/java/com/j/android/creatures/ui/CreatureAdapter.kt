@@ -4,19 +4,14 @@ import android.annotation.SuppressLint
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Transformations.map
 import androidx.recyclerview.widget.RecyclerView
 import com.j.android.creatures.R
 import com.j.android.creatures.app.inflate
-import com.j.android.creatures.model.CompositeItem
 import com.j.android.creatures.model.Creature
 import com.j.android.creatures.model.Favorites
 import kotlinx.android.synthetic.main.list_item_creature.view.*
-import kotlinx.android.synthetic.main.list_item_planet_header.view.*
-import java.lang.IllegalArgumentException
 import java.util.*
 
 class CreatureAdapter(private val creatures: MutableList<Creature>, private val itemDragListener : ItemDragListener): RecyclerView.Adapter<CreatureAdapter.ViewHolder>(), ItemTouchHelperListener {
@@ -102,5 +97,9 @@ class CreatureAdapter(private val creatures: MutableList<Creature>, private val 
 		notifyItemMoved(fromPosition, toPosition)
 		return true
 	}
-
+	override fun onItemDismiss(viewHolder: RecyclerView.ViewHolder, position: Int) {
+		Favorites.removeFavorite(creatures[position], viewHolder.itemView.context)
+		creatures.removeAt(position)
+		notifyItemRemoved(position)
+	}
 }
