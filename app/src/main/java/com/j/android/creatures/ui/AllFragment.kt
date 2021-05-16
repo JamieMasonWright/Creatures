@@ -3,24 +3,24 @@ package com.j.android.creatures.ui
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import androidx.recyclerview.widget.*
 import com.j.android.creatures.R
 import com.j.android.creatures.model.CreatureStore
 import kotlinx.android.synthetic.main.fragment_all.*
+import kotlinx.android.synthetic.main.fragment_favorites.*
 
 
-class AllFragment : Fragment() {
+class AllFragment : Fragment(), ItemDragListener {
 
   private val adapter = CreatureCardAdapter(CreatureStore.getCreatures().toMutableList())
-  private lateinit var layoutManager: StaggeredGridLayoutManager
+  private lateinit var layoutManager: GridLayoutManager
   private lateinit var listItemDecoration: RecyclerView.ItemDecoration
   private lateinit var gridItemDecoration: RecyclerView.ItemDecoration
   private lateinit var listItemMenu : MenuItem
   private lateinit var gridItemMenu: MenuItem
   private var gridState = GridState.GRID
+  private lateinit var itemTouchHelper : ItemTouchHelper
+
 
   private enum class GridState{
     LIST, GRID
@@ -50,7 +50,12 @@ class AllFragment : Fragment() {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-    layoutManager = StaggeredGridLayoutManager(2,  GridLayoutManager.VERTICAL)
+    layoutManager = GridLayoutManager(context, 2,  GridLayoutManager.VERTICAL, false)
+    layoutManager.spanSizeLookup = object  : GridLayoutManager.SpanSizeLookup(){
+      override fun getSpanSize(position: Int): Int {
+        return (adapter.spanSizeAtPosition(position))
+      }
+    }
     creature_recycler_view.layoutManager = layoutManager
     creature_recycler_view.adapter = adapter
     val spacingInPixels = resources.getDimensionPixelSize(R.dimen.creauture_card_grid_layout_margin)
@@ -71,7 +76,7 @@ class AllFragment : Fragment() {
         }
       }
     })
-
+    setupItemTouchHelper()
   }
 
   override fun onOptionsItemSelected(item: MenuItem): Boolean
@@ -103,6 +108,7 @@ class AllFragment : Fragment() {
 
   private fun updateRecyclerView(spanCount: Int, addItemDecoration: RecyclerView.ItemDecoration, removeItemDecoration: RecyclerView.ItemDecoration){
     layoutManager.spanCount = spanCount
+    adapter.jupiterSpanSize = spanCount
     creature_recycler_view.removeItemDecoration(removeItemDecoration)
     creature_recycler_view.addItemDecoration(addItemDecoration)
   }
@@ -122,5 +128,14 @@ class AllFragment : Fragment() {
         gridItemMenu.isEnabled = false
       }
     }
+  }
+
+  override fun onItemDrag(viewHolder: RecyclerView.ViewHolder) {
+    itemTouchHelper.startDrag(viewHolder)
+  }
+
+  private fun setupItemTouchHelper() {
+    itemTouchHelper = ItemTouchHelper(GridItemTouchHelperCallback(adapter))
+    itemTouchHelper.attachToRecyclerView(creature_recycler_view)
   }
 }

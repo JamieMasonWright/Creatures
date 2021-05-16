@@ -1,48 +1,52 @@
 package com.j.android.creatures.ui
 
+import android.annotation.SuppressLint
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.Transformations.map
 import androidx.recyclerview.widget.RecyclerView
 import com.j.android.creatures.R
 import com.j.android.creatures.app.inflate
 import com.j.android.creatures.model.CompositeItem
 import com.j.android.creatures.model.Creature
+import com.j.android.creatures.model.Favorites
 import kotlinx.android.synthetic.main.list_item_creature.view.*
 import kotlinx.android.synthetic.main.list_item_planet_header.view.*
 import java.lang.IllegalArgumentException
+import java.util.*
 
-class CreatureAdapter(private val compositeItem : MutableList<CompositeItem>) : RecyclerView.Adapter<CreatureAdapter.ViewHolder>()
-{
+class CreatureAdapter(private val creatures: MutableList<Creature>, private val itemDragListener : ItemDragListener): RecyclerView.Adapter<CreatureAdapter.ViewHolder>(), ItemTouchHelperListener {
 
-	class ViewHolder(itemView: View) : View.OnClickListener, RecyclerView.ViewHolder(itemView){
-		private lateinit var creature : Creature
+	inner class ViewHolder(itemView: View) : View.OnClickListener, RecyclerView.ViewHolder(itemView), ItemSelectedListener {
+		private lateinit var creature: Creature
 
-		enum class ViewType{
-			HEADER, CREATURE
-		}
-
-		fun bind(composite: CompositeItem){
-			if(composite.isHeader){
-				itemView.headerName.text = composite.header.name
-			}else{
-				this.creature = composite.creature
-				val context = itemView.context
-				itemView.creature_image.setImageResource(context.resources.getIdentifier(creature.uri, null, context.packageName))
-				itemView.full_name.text = creature.fullName
-				itemView.nickname.text = creature.nickname
-				animateView(itemView)
-			}
-		}
-
-		init
-		{
+		init {
 			itemView.setOnClickListener(this)
 		}
 
-		override fun onClick(view: View?)
-		{
+		@SuppressLint("ClickableViewAccessibility")
+		fun bind(creature: Creature) {
+			this.creature = creature
+			val context = itemView.context
+			itemView.creature_image.setImageResource(
+				context.resources.getIdentifier(creature.uri, null, context.packageName))
+			itemView.full_name.text = creature.fullName
+			itemView.nickname.text = creature.nickname
+			itemView.drag_handle.setOnTouchListener{ _, event ->
+				if(event.action == MotionEvent.ACTION_DOWN) {
+					itemDragListener.onItemDrag(this)
+				}
+				false
+			}
+
+			animateView(itemView)
+		}
+
+		override fun onClick(view: View?) {
 			view?.let {
 				val context = it.context
 				val intent = CreatureActivity.newIntent(context, creature.id)
@@ -50,43 +54,53 @@ class CreatureAdapter(private val compositeItem : MutableList<CompositeItem>) : 
 			}
 		}
 
-		private fun animateView(viewToAnimate : View){
-			if(viewToAnimate.animation == null){
+		private fun animateView(viewToAnimate: View) {
+			if (viewToAnimate.animation == null) {
 				val animation = AnimationUtils.loadAnimation(viewToAnimate.context, R.anim.scale_xy)
 				viewToAnimate.animation = animation
 			}
 		}
+
+		override fun onItemSelected() {
+			itemView.list_item_container.setBackgroundColor(
+				ContextCompat.getColor(itemView.context, R.color.selectedItem)
+			)
+		}
+
+		override fun onItemCleared() {
+			itemView.list_item_container.setBackgroundColor(0)
+		}
+
 	}
 
-	fun updateCreatrures(creatures: List<CompositeItem>){
-		this.compositeItem.clear()
-		this.compositeItem.addAll(creatures)
+	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+		return ViewHolder(parent.inflate(R.layout.list_item_creature))
+	}
+
+	override fun getItemCount() = creatures.size
+
+	override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+		holder.bind(creatures[position])
+	}
+
+	fun updateCreatures(creatures: List<Creature>) {
+		this.creatures.clear()
+		this.creatures.addAll(creatures)
 		notifyDataSetChanged()
-
 	}
-	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder
-	{
-		return when (viewType) {
-			ViewHolder.ViewType.HEADER.ordinal -> ViewHolder((parent.inflate(R.layout.list_item_planet_header)))
-			ViewHolder.ViewType.CREATURE.ordinal -> ViewHolder(parent.inflate(R.layout.list_item_creature))
-			else -> throw IllegalArgumentException()
+
+	override fun onItemMove(recyclerView: RecyclerView, fromPosition: Int, toPosition: Int): Boolean {
+		if (fromPosition < toPosition) {
+			for (i in fromPosition until toPosition) {
+				Collections.swap(creatures, i, i + 1)
+			}
+		} else {
+			for (i in fromPosition downTo toPosition + 1) {
+				Collections.swap(creatures, i, i - 1)
+			}
 		}
-	}
-
-
-	override fun onBindViewHolder(holder: ViewHolder, position: Int)
-	{
-		holder.bind(compositeItem[position])
-	}
-
-	override fun getItemCount() = compositeItem.size
-
-	override fun getItemViewType(position: Int): Int {
-		return if (compositeItem[position].isHeader){
-			ViewHolder.ViewType.HEADER.ordinal
-		}else{
-			ViewHolder.ViewType.CREATURE.ordinal
-		}
+		notifyItemMoved(fromPosition, toPosition)
+		return true
 	}
 
 }

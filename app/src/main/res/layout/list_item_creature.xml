@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+	android:id="@+id/list_item_container"
+	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
@@ -42,6 +44,20 @@
 		app:layout_constraintStart_toEndOf="@+id/creature_image"
 		app:layout_constraintTop_toBottomOf="@+id/full_name"
 		tools:text="Nickname" />
+
+	<ImageView
+		android:id="@+id/drag_handle"
+		android:layout_width="@dimen/drag_handle_size"
+		android:layout_height="@dimen/drag_handle_size"
+		android:layout_marginLeft="152dp"
+		android:layout_marginTop="65dp"
+		android:layout_marginEnd="27dp"
+		android:contentDescription="@string/content_description_drag_handle"
+		android:src="@drawable/ic_baseline_reorder_24"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintLeft_toRightOf="@id/full_name"
+		app:layout_constraintTop_toTopOf="parent"
+		android:tint="@color/colorAccent"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
